@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import FlightList from '@/components/FlightList'
 import HotelList from '@/components/HotelList'
 import PackageList from '@/components/PackageList'

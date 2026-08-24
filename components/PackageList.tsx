@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Package } from '@/lib/supabase'
 
 interface PackageListProps {
@@ -13,11 +13,7 @@ export default function PackageList({ searchQuery }: PackageListProps) {
   const [error, setError] = useState<string | null>(null)
   const [generatingCustom, setGeneratingCustom] = useState(false)
 
-  useEffect(() => {
-    fetchPackages()
-  }, [searchQuery])
-
-  const fetchPackages = async () => {
+  const fetchPackages = useCallback(async () => {
     try {
       setLoading(true)
       const params = new URLSearchParams()
@@ -35,7 +31,11 @@ export default function PackageList({ searchQuery }: PackageListProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [searchQuery])
+
+  useEffect(() => {
+    fetchPackages()
+  }, [fetchPackages])
 
   const generateCustomPackage = async () => {
     try {

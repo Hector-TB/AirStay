@@ -67,11 +67,13 @@ CREATE INDEX idx_packages_created ON packages(created_at);
 -- Sample Data (Optional - for testing)
 
 -- Insert sample flights
+-- Departure/arrival times are relative to CURRENT_DATE so the seed data
+-- never goes stale, whenever the script is run.
 INSERT INTO flights (airline, flight_number, origin, destination, departure_time, arrival_time, price, seats_available) VALUES
-('Delta Airlines', 'DL123', 'New York (JFK)', 'Los Angeles (LAX)', '2024-12-20 08:00:00', '2024-12-20 11:30:00', 350.00, 45),
-('United Airlines', 'UA456', 'Chicago (ORD)', 'Miami (MIA)', '2024-12-21 14:00:00', '2024-12-21 17:30:00', 280.00, 32),
-('American Airlines', 'AA789', 'Boston (BOS)', 'San Francisco (SFO)', '2024-12-22 09:00:00', '2024-12-22 12:45:00', 420.00, 28),
-('Southwest Airlines', 'SW234', 'Dallas (DFW)', 'Las Vegas (LAS)', '2024-12-23 16:00:00', '2024-12-23 17:30:00', 180.00, 60);
+('Delta Airlines', 'DL123', 'New York (JFK)', 'Los Angeles (LAX)', (CURRENT_DATE + 30) + TIME '08:00', (CURRENT_DATE + 30) + TIME '11:30', 350.00, 45),
+('United Airlines', 'UA456', 'Chicago (ORD)', 'Miami (MIA)', (CURRENT_DATE + 31) + TIME '14:00', (CURRENT_DATE + 31) + TIME '17:30', 280.00, 32),
+('American Airlines', 'AA789', 'Boston (BOS)', 'San Francisco (SFO)', (CURRENT_DATE + 32) + TIME '09:00', (CURRENT_DATE + 32) + TIME '12:45', 420.00, 28),
+('Southwest Airlines', 'SW234', 'Dallas (DFW)', 'Las Vegas (LAS)', (CURRENT_DATE + 33) + TIME '16:00', (CURRENT_DATE + 33) + TIME '17:30', 180.00, 60);
 
 -- Insert sample hotels
 INSERT INTO hotels (name, location, rating, price_per_night, amenities, available_rooms) VALUES

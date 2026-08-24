@@ -1,9 +1,31 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+let client: SupabaseClient | null = null
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+/**
+ * Returns the shared Supabase client, constructing it on first use.
+ *
+ * The client is deliberately not created at module scope: `next build` imports
+ * every route module to collect page data, and createClient() throws when the
+ * config is missing, which would fail the build for anyone who has not set up
+ * a .env.local yet.
+ */
+export function getSupabaseClient(): SupabaseClient {
+  if (client) return client
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!url || !anonKey) {
+    throw new Error(
+      'Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and ' +
+        'NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local (see .env.example).'
+    )
+  }
+
+  client = createClient(url, anonKey)
+  return client
+}
 
 // Database Types
 export interface Flight {

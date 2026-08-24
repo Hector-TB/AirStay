@@ -13,28 +13,27 @@ export default function FlightList({ searchQuery }: FlightListProps) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    const fetchFlights = async () => {
+      try {
+        setLoading(true)
+        const params = new URLSearchParams()
+        if (searchQuery) params.append('search', searchQuery)
+
+        const response = await fetch(`/api/flights?${params}`)
+        if (!response.ok) throw new Error('Failed to fetch flights')
+
+        const data = await response.json()
+        setFlights(data)
+        setError(null)
+      } catch (err) {
+        setError('Failed to load flights. Please try again.')
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchFlights()
   }, [searchQuery])
-
-  const fetchFlights = async () => {
-    try {
-      setLoading(true)
-      const params = new URLSearchParams()
-      if (searchQuery) params.append('search', searchQuery)
-
-      const response = await fetch(`/api/flights?${params}`)
-      if (!response.ok) throw new Error('Failed to fetch flights')
-
-      const data = await response.json()
-      setFlights(data)
-      setError(null)
-    } catch (err) {
-      setError('Failed to load flights. Please try again.')
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (loading) {
     return <div className="text-center py-12 text-gray-600">Loading flights...</div>

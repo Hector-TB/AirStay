@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { getSupabaseClient } from '@/lib/supabase'
 import axios from 'axios'
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabaseClient()
     const body = await request.json()
     const { preferences } = body
 

@@ -13,28 +13,27 @@ export default function HotelList({ searchQuery }: HotelListProps) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        setLoading(true)
+        const params = new URLSearchParams()
+        if (searchQuery) params.append('search', searchQuery)
+
+        const response = await fetch(`/api/hotels?${params}`)
+        if (!response.ok) throw new Error('Failed to fetch hotels')
+
+        const data = await response.json()
+        setHotels(data)
+        setError(null)
+      } catch (err) {
+        setError('Failed to load hotels. Please try again.')
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchHotels()
   }, [searchQuery])
-
-  const fetchHotels = async () => {
-    try {
-      setLoading(true)
-      const params = new URLSearchParams()
-      if (searchQuery) params.append('search', searchQuery)
-
-      const response = await fetch(`/api/hotels?${params}`)
-      if (!response.ok) throw new Error('Failed to fetch hotels')
-
-      const data = await response.json()
-      setHotels(data)
-      setError(null)
-    } catch (err) {
-      setError('Failed to load hotels. Please try again.')
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (loading) {
     return <div className="text-center py-12 text-gray-600">Loading hotels...</div>
@@ -62,7 +61,7 @@ export default function HotelList({ searchQuery }: HotelListProps) {
               <div className="text-gray-600 mb-2">📍 {hotel.location}</div>
               <div className="flex items-center gap-1 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className={i < hotel.rating ? 'text-yellow-400' : 'text-gray-300'}>
+                  <span key={i} className={i < Math.round(hotel.rating) ? 'text-yellow-400' : 'text-gray-300'}>
                     ⭐
                   </span>
                 ))}
